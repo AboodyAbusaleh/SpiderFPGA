@@ -87,26 +87,27 @@ uint32_t Motor::GetSpeed(void)
  * Handles Right-side motor inversion.
  */
 void Motor::Move(float fAngle) {
-    //Limit the angle bounds
+    // 1. Limit the angle bounds
     if (fAngle > DEGREE_MAX) fAngle = DEGREE_MAX;
     if (fAngle < DEGREE_MIN) fAngle = DEGREE_MIN;
 
-    //Handle -0.0 edge case
+    // 2. Handle -0.0 edge case
     if (fAngle == -0.0f) fAngle = 0.0f;
 
-    //Update internal state
+    // 3. Update internal state
     motor_angle = fAngle;
 
-    //Handle Right Side Inversion (IDs 0-8)
+    // 4. Handle Right Side Inversion (IDs 0-8)
+    // "Negate all angle assignments to the motors on the RIGHT legs"
     float effective_angle = fAngle;
     if (m_nMotorID < 9) {
         effective_angle = -fAngle;
     }
 
-    //Calculate Duty Cycle
+    // 5. Calculate Duty Cycle
     // 0 deg = 75,000. Slope = 50,000 cycles / 90 degrees = 555.556 cycles/deg
     int duty_cycle = 75000 + (int)(effective_angle * 555.556f);
 
-    //Write to register
+    // 6. Write to register
     mmio->RegisterWrite((szPWM_Base[m_nMotorID] + REG_HIGH_DUR), duty_cycle);
 }

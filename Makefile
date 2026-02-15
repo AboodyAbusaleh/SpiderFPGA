@@ -1,4 +1,3 @@
-# Compiles Spider Robot program
 
 TARGET = spider
 
@@ -15,8 +14,9 @@ server: server.o
 client: client.o
 	$(CC) $(LDFLAGS) $^ -o $@
 
-$(TARGET): Main.o MMap.o LEDControl.o Motor.o 
-	$(CC) $(LDFLAGS)  $^ -o $@ 
+
+$(TARGET): Main.o MMap.o LEDControl.o Motor.o SpiderLeg.o
+	$(CC) $(LDFLAGS) $^ -o $@
 
 %.o : %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
